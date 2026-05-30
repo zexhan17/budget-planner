@@ -1036,6 +1036,12 @@ const CSS = `
 .restore-label:hover{border-color:var(--brass); color:var(--brass);}
 .restore-label svg{color:var(--brass); flex-shrink:0;}
 
+@media(max-width:560px){
+  .buckets{flex-wrap:nowrap; overflow-x:auto; -webkit-overflow-scrolling:touch; padding-bottom:10px; margin-left:-16px; margin-right:-16px; padding-left:16px; padding-right:16px; scrollbar-width:none;}
+  .buckets::-webkit-scrollbar{display:none;}
+  .bucket{flex:0 0 160px; min-width:160px;}
+  .bucket.add{flex:0 0 110px; min-width:110px;}
+}
 @media(max-width:420px){
   .hero-amount{font-size:38px;}
   .two{flex-direction:column; gap:0;}
