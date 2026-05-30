@@ -69,6 +69,7 @@ export default function Khata() {
   const [editTxn, setEditTxn]           = useState<Txn | null>(null);
   const [repeatTxn, setRepeatTxn]       = useState<Txn | null>(null);
   const [editAccount, setEditAccount]   = useState<Account | null>(null);
+  const [menuOpen, setMenuOpen]         = useState(false);
 
   /* ── load ── */
   useEffect(() => {
@@ -255,7 +256,7 @@ export default function Khata() {
   return (
     <div className="khata">
       <style>{CSS}</style>
-      <div className="sheet">
+      <div className="sheet" onClick={() => setMenuOpen(false)}>
 
         {/* masthead */}
         <header className="masthead">
@@ -264,11 +265,25 @@ export default function Khata() {
             <p className="tag">Your money, sorted into buckets.</p>
           </div>
           <div className="masthead-end">
-            {unlocked && <button className="ghost-btn" onClick={() => setModal("export")}><Download size={15} /> Export</button>}
-            {unlocked && <button className="ghost-btn" onClick={() => setModal("reset")}><RotateCcw size={15} /> Reset</button>}
-            {unlocked && <button className="ghost-btn change-pwd-btn" onClick={() => setModal("change-password")}>Change password</button>}
+            {/* desktop: individual buttons */}
+            {unlocked && <button className="ghost-btn desktop-only" onClick={() => setModal("export")}><Download size={15} /> Export</button>}
+            {unlocked && <button className="ghost-btn desktop-only" onClick={() => setModal("reset")}><RotateCcw size={15} /> Reset</button>}
+            {unlocked && <button className="ghost-btn change-pwd-btn desktop-only" onClick={() => setModal("change-password")}>Change password</button>}
+            {/* mobile: overflow menu */}
+            {unlocked && (
+              <div className="overflow-menu">
+                <button className="ghost-btn mobile-menu-btn" onClick={() => setMenuOpen((o) => !o)}>•••</button>
+                {menuOpen && (
+                  <div className="overflow-dropdown" onMouseDown={(e) => e.stopPropagation()}>
+                    <button onClick={() => { setModal("export"); setMenuOpen(false); }}><Download size={14} /> Export</button>
+                    <button onClick={() => { setModal("change-password"); setMenuOpen(false); }}>Change password</button>
+                    <button className="danger" onClick={() => { setModal("reset"); setMenuOpen(false); }}><RotateCcw size={14} /> Reset</button>
+                  </div>
+                )}
+              </div>
+            )}
             <button className={`ghost-btn lock-btn ${unlocked ? "is-unlocked" : ""}`}
-              onClick={() => unlocked ? setUnlocked(false) : setModal("unlock")}>
+              onClick={() => { unlocked ? setUnlocked(false) : setModal("unlock"); setMenuOpen(false); }}>
               {unlocked ? <LockOpen size={15} /> : <Lock size={15} />}
               {unlocked ? "Lock" : "Unlock"}
             </button>
@@ -1035,6 +1050,27 @@ const CSS = `
   border-radius:12px; padding:13px 16px; cursor:pointer; font-size:13.5px; color:var(--ink-soft); transition:.15s;}
 .restore-label:hover{border-color:var(--brass); color:var(--brass);}
 .restore-label svg{color:var(--brass); flex-shrink:0;}
+
+/* overflow menu — hidden on desktop */
+.mobile-menu-btn{display:none;}
+.overflow-menu{position:relative;}
+.overflow-dropdown{position:absolute; top:calc(100% + 6px); right:0; background:var(--paper); border:1px solid var(--line);
+  border-radius:13px; box-shadow:0 8px 24px -6px rgba(23,42,32,.22); min-width:170px; z-index:40; overflow:hidden; animation:fade .15s ease;}
+.overflow-dropdown button{display:flex; align-items:center; gap:8px; width:100%; padding:12px 15px; border:none; background:transparent;
+  font-family:var(--sans); font-size:13.5px; color:var(--ink); cursor:pointer; text-align:left; transition:.12s;}
+.overflow-dropdown button:hover{background:rgba(184,137,61,.07);}
+.overflow-dropdown button.danger{color:var(--red);}
+.overflow-dropdown button.danger:hover{background:rgba(168,68,47,.07);}
+.overflow-dropdown button+button{border-top:1px solid var(--line);}
+
+@media(max-width:560px){
+  .desktop-only{display:none !important;}
+  .mobile-menu-btn{display:inline-flex;}
+}
+
+@media(min-width:561px){
+  .overflow-menu{display:none;}
+}
 
 @media(max-width:560px){
   .buckets{flex-wrap:nowrap; overflow-x:auto; -webkit-overflow-scrolling:touch; padding-bottom:10px; margin-left:-16px; margin-right:-16px; padding-left:16px; padding-right:16px; scrollbar-width:none;}
