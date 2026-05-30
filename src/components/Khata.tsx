@@ -260,10 +260,7 @@ export default function Khata() {
 
         {/* masthead */}
         <header className="masthead">
-          <div>
-            <h1><span className="latin">Khata</span></h1>
-            <p className="tag">Your money, sorted into buckets.</p>
-          </div>
+
           <div className="masthead-end">
             {/* desktop: individual buttons */}
             {unlocked && <button className="ghost-btn desktop-only" onClick={() => setModal("export")}><Download size={15} /> Export</button>}
