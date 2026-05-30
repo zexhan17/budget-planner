@@ -260,7 +260,10 @@ export default function Khata() {
 
         {/* masthead */}
         <header className="masthead">
-
+          <div>
+            <h1><span className="latin">Khata</span></h1>
+            <p className="tag">Your money, sorted into buckets.</p>
+          </div>
           <div className="masthead-end">
             {/* desktop: individual buttons */}
             {unlocked && <button className="ghost-btn desktop-only" onClick={() => setModal("export")}><Download size={15} /> Export</button>}
@@ -268,10 +271,10 @@ export default function Khata() {
             {unlocked && <button className="ghost-btn change-pwd-btn desktop-only" onClick={() => setModal("change-password")}>Change password</button>}
             {/* mobile: overflow menu */}
             {unlocked && (
-              <div className="overflow-menu">
+              <div className="overflow-menu" onClick={(e) => e.stopPropagation()}>
                 <button className="ghost-btn mobile-menu-btn" onClick={() => setMenuOpen((o) => !o)}>•••</button>
                 {menuOpen && (
-                  <div className="overflow-dropdown" onMouseDown={(e) => e.stopPropagation()}>
+                  <div className="overflow-dropdown">
                     <button onClick={() => { setModal("export"); setMenuOpen(false); }}><Download size={14} /> Export</button>
                     <button onClick={() => { setModal("change-password"); setMenuOpen(false); }}>Change password</button>
                     <button className="danger" onClick={() => { setModal("reset"); setMenuOpen(false); }}><RotateCcw size={14} /> Reset</button>
@@ -371,16 +374,14 @@ export default function Khata() {
               </div>
             );
           })}
-          <button className="bucket add" onClick={() => setModal("account")}>
-            <Plus size={20} /><span>New bucket</span>
-          </button>
         </section>
 
         {/* actions */}
         <section className="actions">
-          <button className="act income"   onClick={() => setModal("income")}><ArrowDownLeft size={18} /> Add income</button>
-          <button className="act transfer" onClick={() => setModal("transfer")}><ArrowLeftRight size={18} /> Transfer</button>
-          <button className="act expense"  onClick={() => setModal("expense")}><ArrowUpRight size={18} /> Add expense</button>
+          <button className="act income"   onClick={() => setModal("income")}><ArrowDownLeft size={18} /><span className="act-label">Add income</span></button>
+          <button className="act expense"  onClick={() => setModal("expense")}><ArrowUpRight size={18} /><span className="act-label">Add expense</span></button>
+          <button className="act transfer" onClick={() => setModal("transfer")}><ArrowLeftRight size={18} /><span className="act-label">Transfer</span></button>
+          <button className="act bucket"   onClick={() => setModal("account")}><Plus size={18} /><span className="act-label">New bucket</span></button>
         </section>
 
         {/* ledger */}
@@ -897,14 +898,16 @@ const CSS = `
 .b-label{font-family:var(--mono); font-size:10px; letter-spacing:.01em; line-height:1.3; display:block;}
 
 /* actions */
-.actions{display:flex; gap:10px; margin-bottom:24px; flex-wrap:wrap;}
-.act{flex:1; min-width:120px; display:inline-flex; align-items:center; justify-content:center; gap:8px; padding:13px 10px; border-radius:13px;
-  font-family:var(--sans); font-weight:600; font-size:13.5px; cursor:pointer; border:none; transition:.15s; color:#fff; white-space:nowrap;}
+.actions{display:flex; gap:10px; margin-bottom:24px;}
+.act{flex:1; display:inline-flex; align-items:center; justify-content:center; gap:6px; padding:13px 8px; border-radius:13px;
+  font-family:var(--sans); font-weight:600; font-size:13px; cursor:pointer; border:none; transition:.15s; color:#fff; white-space:nowrap;}
 .act.income{background:var(--green);} .act.income:hover{background:#27583a;}
 .act.transfer{background:var(--card); color:var(--brass); border:1px solid rgba(184,137,61,.35);}
 .act.transfer:hover{background:rgba(184,137,61,.08);}
 .act.expense{background:var(--card); color:var(--red); border:1px solid rgba(168,68,47,.3);}
 .act.expense:hover{background:rgba(168,68,47,.07);}
+.act.bucket{background:var(--card); color:var(--ink-soft); border:1.5px dashed var(--line);}
+.act.bucket:hover{border-color:var(--brass); color:var(--brass); background:rgba(184,137,61,.05);}
 
 /* ledger */
 .ledger{background:var(--card); border:1px solid var(--line); border-radius:16px; overflow:hidden;}
@@ -1063,6 +1066,8 @@ const CSS = `
 @media(max-width:560px){
   .desktop-only{display:none !important;}
   .mobile-menu-btn{display:inline-flex;}
+  .act{padding:14px 0; gap:0;}
+  .act-label{display:none;}
 }
 
 @media(min-width:561px){
